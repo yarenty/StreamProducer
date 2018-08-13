@@ -3,8 +3,7 @@ package com.yarenty.streamer
 /***
   * Config / session - processing input arguments.
   * @TODO: read from properties as alternative!
-  * 
-  * 
+  *
   * @param args
   *             
   * (C)2018 by yarenty            
@@ -14,7 +13,7 @@ class Config(val args: Array[String]) {
   val version = "1.0.0"
   var debugMode = false
   var csv: String = _
-  var outputDir: String = _
+  var url: String = _
 
   
   
@@ -28,7 +27,7 @@ class Config(val args: Array[String]) {
       case "-v" => _printVersion()
       case "-version" => _printVersion()
       case "-in" => if (args.length > (i + 1)) csv = args(i + 1)
-      case "-out" => if (args.length > (i + 1)) outputDir = args(i + 1)
+      case "-url" => if (args.length > (i + 1)) url = args(i + 1)
       case "-d" => debugMode = true
       case "-debug" => debugMode = true
       case _ => //skip
@@ -36,7 +35,7 @@ class Config(val args: Array[String]) {
   }
 
   require(args.contains("-in"), "Please specify input data \"-in\"! (-h for help).")
-//  require(args.contains("-out"), "Please specify output directory  \"-out\"! (-h for help).")
+  require(args.contains("-url"), "Please specify URL  \"-url\"! (-h for help).")
 
   checkIfExist(csv)
 
