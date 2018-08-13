@@ -1,3 +1,4 @@
+description = "Stream-Er => Stream Producer"
 
 
 // The build script settings to fetch plugins and put them on classpath
@@ -30,12 +31,6 @@ buildscript {
     }
 }
 
-
-// plugins to be resolved on top level but use on specific only
-plugins {
-    id 'org.asciidoctor.convert' version '1.5.6' apply false
-    id "org.scoverage" version "2.3.0" apply false
-}
 
 //local definitions
 ext {
@@ -98,6 +93,7 @@ dependencies {
 //compile group: 'joda-time', name: 'joda-time', version: '2.9.9'
 //compile group: 'org.joda', name: 'joda-convert', version: '1.8.1'
 //compile group: 'org.apache.commons', name: 'commons-math3', version: '3.6.1'
+compile group: 'commons-io', name: 'commons-io', version: '2.6'
 //compile group: 'io.argonaut', name: 'argonaut_2.10', version: '6.1'
 
 
@@ -105,18 +101,18 @@ dependencies {
 
 //compile group: "io.swagger", name: "swagger-jaxrs", version: "1.5.20"
 //compile group: "com.github.swagger-akka-http", name: "swagger-akka-http_$scalaBinaryVersion", version: "0.14.1"
-//compile group: "com.typesafe.akka", name: "akka-http_$scalaBinaryVersion", version: "$akkaHttpVersion"
+compile group: "com.typesafe.akka", name: "akka-http_$scalaBinaryVersion", version: "$akkaHttpVersion"
 //compile group: "com.typesafe.akka", name: "akka-http-spray-json_$scalaBinaryVersion", version: "$akkaHttpVersion"
-//compile group: "com.typesafe.akka", name: "akka-actor_$scalaBinaryVersion", version: "$akkaVersion"
-//compile group: "com.typesafe.akka", name: "akka-stream_$scalaBinaryVersion", version: "$akkaVersion"
+compile group: "com.typesafe.akka", name: "akka-actor_$scalaBinaryVersion", version: "$akkaVersion"
+compile group: "com.typesafe.akka", name: "akka-stream_$scalaBinaryVersion", version: "$akkaVersion"
 //compile group: "com.typesafe.akka", name: "akka-slf4j_$scalaBinaryVersion", version: "$akkaVersion"
-//compile group: "ch.megard", name: "akka-http-cors_$scalaBinaryVersion", version: "0.3.0"
+testCompile group: "ch.megard", name: "akka-http-cors_$scalaBinaryVersion", version: "0.3.0"
 //compile group: "javax.xml.bind", name: "jaxb-api", version: "2.3.0"  //https://github.com/swagger-akka-http/swagger-akka-http/issues/62
 //compile group: "org.slf4j", name: "slf4j-simple", version: "1.7.25"
     
     
     testCompile "junit:junit:${junitVersion}"
-    testCompile "org.scalatest:scalatest_${scalaBinaryVersion}:2.2.1"
+    testCompile "org.scalatest:scalatest_${scalaBinaryVersion}:3.0.5"
     
     
 }
