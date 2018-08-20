@@ -7,7 +7,7 @@ package com.yarenty.streamer
   *
   * @param config implicit
   */
-abstract class CSVProcessor(implicit config: Config) {
+abstract class CSVProcessor(implicit config: Config) extends AutoCloseable {
   val src = config.csv
 
   def hasMore: Boolean
@@ -16,7 +16,6 @@ abstract class CSVProcessor(implicit config: Config) {
 
 }
 
-// scalastyle:off
 /**
   * Very simple parser process - just getting line by line.
   *
@@ -38,9 +37,8 @@ case class SimpleCSVProcessor(implicit config: Config) extends CSVProcessor {
     out
   }
 
-  override def finalize(): Unit = {
+  override def close(): Unit = {
     bufferedSource.close
-    super.finalize()
   }
 
 }
@@ -73,9 +71,8 @@ case class CSVToHttpGetProcessor(implicit config: Config) extends CSVProcessor {
   }
 
 
-  override def finalize(): Unit = {
+  override def close(): Unit = {
     bufferedSource.close
-    super.finalize()
   }
 
 }
@@ -110,15 +107,14 @@ case class CSVToArrayProcessor(implicit config: Config) extends CSVProcessor {
   def getArray(): Array[Array[String]] = {
     val row = lines(idx).split(",").map(_.trim)
     idx = idx + 1
-    val out = Array(cols,row)
+    val out = Array(cols, row)
     if (config.debugMode) println(out) // scalastyle:ignore
     out
   }
 
 
-  override def finalize(): Unit = {
+  override def close(): Unit = {
     bufferedSource.close
-    super.finalize()
   }
 
 }
@@ -151,8 +147,7 @@ case class CSVToJsonProcessor(implicit config: Config) extends CSVProcessor {
   }
 
 
-  override def finalize(): Unit = {
+  override def close(): Unit = {
     bufferedSource.close
-    super.finalize()
   }
 }
