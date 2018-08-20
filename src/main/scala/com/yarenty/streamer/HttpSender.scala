@@ -9,7 +9,7 @@ import scala.concurrent.Future
 import scala.util.{Failure, Success}
 
 
-case class Response(success: Boolean, descrition: String, `object`: Object)
+case class Output(success: Boolean, descrition: String, `object`: Object)
 
 
 abstract class HttpSender(implicit config: Config) {
@@ -19,27 +19,27 @@ abstract class HttpSender(implicit config: Config) {
   implicit val materializer = ActorMaterializer()
 
 
-  def send(body: String):Response
+  def send(body: String):Output
 
 }
 
 case class HttpGetSender(implicit config: Config) extends HttpSender {
 
-  override def send(body: String): Response = { // scalastyle:ignore
+  override def send(body: String): Output = { // scalastyle:ignore
 
     val responseFuture: Future[HttpResponse] = Http()
       .singleRequest(HttpRequest(uri = config.url + "?" + body))
 
-    var out: Response = null
+    var out: Output = null
 
     responseFuture.onComplete {
       case Success(res) => {
         println(res) // scalastyle:ignore
-        out = new Response(true, res.toString, res)
+        out = new Output(true, res.toString, res)
       }
       case Failure(ex) => {
         sys.error("something wrong")
-        out = new Response(false, "something wrong", ex)
+        out = new Output(false, "something wrong", ex)
       }
     }
 
@@ -52,7 +52,7 @@ case class HttpGetSender(implicit config: Config) extends HttpSender {
 case class HttpPostSender(implicit config: Config) extends HttpSender {
 
 
-  override def send(body: String): Response = { // scalastyle:ignore
+  override def send(body: String): Output = { // scalastyle:ignore
 
     val responseFuture: Future[HttpResponse] = Http().singleRequest(HttpRequest(
       method = HttpMethods.POST,
@@ -60,16 +60,16 @@ case class HttpPostSender(implicit config: Config) extends HttpSender {
       entity = body
     ))
 
-    var out: Response = null
+    var out: Output = null
 
     responseFuture.onComplete {
       case Success(res) => {
         println(res) // scalastyle:ignore
-        out = new Response(true, res.toString, res)
+        out = new Output(true, res.toString, res)
       }
       case Failure(ex) => {
         sys.error("something wrong")
-        out = new Response(false, "something wrong", ex)
+        out = new Output(false, "something wrong", ex)
       }
     }
 
