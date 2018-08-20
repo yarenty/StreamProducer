@@ -14,16 +14,23 @@ object StreamEr {
 
     println("Stream-Er") // scalastyle:ignore
 
-    val input: CSVProcessor = new CSVToHttpGetProcessor
+//    val input: CSVProcessor = new CSVToHttpGetProcessor
+
+    val input = new CSVToArrayProcessor
     val sender: HttpSender = new HttpGetSender
-
-
+    
+    val influxDBSend: InfluxDBSender = new InfluxDBSender
+    
+    
     while (input.hasMore) {
-      wait(5000)
-      sender.send(input.getLine())
+      Thread.sleep(5000)
+//      sender.send(input.getLine())
+
+      influxDBSend.send(input.getArray)
     }
 
     println("That's all folks!!") //scalastyle:ignore
    
+    System.exit(0)
   }
 }

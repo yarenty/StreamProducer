@@ -105,7 +105,10 @@ POST | URL |
 
 # Usage
 
+```
+-in simple_with_header.csv -url http://localhost:9200
 
+```
 
 
 
