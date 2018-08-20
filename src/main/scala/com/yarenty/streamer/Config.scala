@@ -40,10 +40,18 @@ class Config(val args: Array[String]) {
   checkIfExist(csv)
 
   private def checkIfExist(inputFile: String): Boolean = {
-    require(new java.io.File(inputFile).exists, s"Could not find input data:'$inputFile' - check if path is correct.")
+    csv = if (new java.io.File(inputFile).exists)  inputFile else getFileName(inputFile) 
+    require(new java.io.File(csv).exists, s"Could not find input data:'$inputFile' - check if path is correct.")
     true
   }
 
+  def getFileName(fileName: String): String = {
+    var is = getClass.getResource(fileName)
+    if (null == is) is = getClass.getClassLoader.getResource(fileName)
+    if (null == is) classOf[Config].getResource("/../resources/" + fileName)
+    if (null == is) classOf[Config].getResource("/../../resources/test/" + fileName)
+    if (null == is) fileName else is.getPath
+  }
 
   private def _help(): Unit = {
     println(
