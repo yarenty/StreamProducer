@@ -1,5 +1,8 @@
 package com.yarenty.streamer
 
+import akka.actor.ActorSystem
+import akka.stream.ActorMaterializer
+
 
 /**
   * Stream-Er - process input CSV file and send stream of data to specific URL with configured interval.
@@ -12,6 +15,11 @@ object StreamEr {
 
     implicit val config = new Config(args)
 
+      implicit val system = ActorSystem()
+      implicit val dispatcher = system.dispatcher
+      implicit val materializer = ActorMaterializer()
+   
+    
     println("Stream-Er") // scalastyle:ignore
 
 //    val input: CSVProcessor = new CSVToHttpGetProcessor
