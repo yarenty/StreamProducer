@@ -24,7 +24,7 @@ abstract class CSVProcessor(implicit config: Config) {
   */
 case class SimpleCSVProcessor(implicit config: Config) extends CSVProcessor {
 
-  val bufferedSource = io.Source.fromFile(src)
+  val bufferedSource = scala.io.Source.fromFile(src)
   //yes - i know whole file in memory ... but  no need for anything fancy here
   val lines: Array[String] = bufferedSource.getLines.toArray
   var idx = 0
@@ -55,7 +55,7 @@ case class SimpleCSVProcessor(implicit config: Config) extends CSVProcessor {
 case class CSVToHttpGetProcessor(implicit config: Config) extends CSVProcessor {
 
 
-  val bufferedSource = io.Source.fromFile(src)
+  val bufferedSource = scala.io.Source.fromFile(src)
   //yes - i know whole file in memory ... but  no need for anything fancy here
   val lines: Array[String] = bufferedSource.getLines.toArray
   val cols = lines(0).split(",").map(_.trim)
@@ -80,6 +80,50 @@ case class CSVToHttpGetProcessor(implicit config: Config) extends CSVProcessor {
 
 }
 
+
+/**
+  * Every time return Array - first line - headers second line values  
+  * TIP: CSV must have header!!!
+  *
+  * @param config implicit
+  */
+case class CSVToArrayProcessor(implicit config: Config) extends CSVProcessor {
+
+
+  val bufferedSource = scala.io.Source.fromFile(src)
+  //yes - i know whole file in memory ... but  no need for anything fancy here
+  val lines: Array[String] = bufferedSource.getLines.toArray
+  val cols = lines(0).split(",").map(_.trim)
+  var idx = 1
+
+  override def hasMore: Boolean = lines.length > idx
+
+  override def getLine(): String = {
+    val row = lines(idx).split(",").map(_.trim)
+    idx = idx + 1
+    val out = cols.zip(row).map(x => x._1 + "=" + x._2).mkString("&")
+    if (config.debugMode) println(out) // scalastyle:ignore
+
+    out
+  }
+
+  def getArray(): Array[Array[String]] = {
+    val row = lines(idx).split(",").map(_.trim)
+    idx = idx + 1
+    val out = Array(cols,row)
+    if (config.debugMode) println(out) // scalastyle:ignore
+    out
+  }
+
+
+  override def finalize(): Unit = {
+    bufferedSource.close
+    super.finalize()
+  }
+
+}
+
+
 /**
   * Create JSON from heater as keys and each line as values.
   * TIP: CSV must have header!!!
@@ -89,7 +133,7 @@ case class CSVToHttpGetProcessor(implicit config: Config) extends CSVProcessor {
   */
 case class CSVToJsonProcessor(implicit config: Config) extends CSVProcessor {
 
-  val bufferedSource = io.Source.fromFile(src)
+  val bufferedSource = scala.io.Source.fromFile(src)
   //yes - i know whole file in memory ... but  no need for anything fancy here
   val lines: Array[String] = bufferedSource.getLines.toArray
   val cols = lines(0).split(",").map(_.trim)
